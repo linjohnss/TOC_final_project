@@ -3,9 +3,10 @@ import sys
 
 from flask import Flask, jsonify, request, abort, send_file
 from dotenv import load_dotenv
+from func import handel_favorite
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent
 
 from fsm import TocMachine
 from utils import send_text_message
@@ -14,21 +15,103 @@ load_dotenv()
 
 
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["user", 
+    "introduce", 
+    "menu", 
+    "restaurant", 
+    "restaurant_keyword",
+    "nearby_search", 
+    "convenience_store", 
+    "convenience_store_keyword",
+    "public_transportation",
+    "public_transportation_keyword",
+    "favorite"],
     transitions=[
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "dest": "introduce",
+            "conditions": "is_going_to_introduce",
         },
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "dest": "favorite",
+            "conditions": "is_going_to_favorite",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "menu",
+            "conditions": "is_going_to_menu",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "restaurant",
+            "conditions": "is_going_to_restaurant",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "convenience_store",
+            "conditions": "is_going_to_convenience_store",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "public_transportation",
+            "conditions": "is_going_to_public_transportation",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "menu",
+            "conditions": "change_traffic_type",
+        },
+        {
+            "trigger": "advance",
+            "source": ["restaurant", "convenience_store", "public_transportation"],
+            "dest": "nearby_search",
+            "conditions": "is_going_to_nearby_search",
+        },
+        {
+            "trigger": "advance",
+            "source": "restaurant_keyword",
+            "dest": "restaurant",
+            "conditions": "is_text",
+        },
+        {
+            "trigger": "advance",
+            "source": "convenience_store_keyword",
+            "dest": "convenience_store",
+            "conditions": "is_text",
+        },
+        {
+            "trigger": "advance",
+            "source": "public_transportation_keyword",
+            "dest": "public_transportation",
+            "conditions": "is_text",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "restaurant_keyword",
+            "conditions": "is_restaurant_keyword",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "convenience_store_keyword",
+            "conditions": "is_convenience_store_keyword",
+        },
+        {
+            "trigger": "advance",
+            "source": "menu",
+            "dest": "public_transportation_keyword",
+            "conditions": "is_public_transportation_keyword",
+        },
+        {"trigger": "go_back", "source": ["introduce", "menu", "nearby_search", "favorite"], "dest": "user"},
     ],
     initial="user",
     auto_transitions=False,
@@ -69,8 +152,8 @@ def callback():
     for event in events:
         if not isinstance(event, MessageEvent):
             continue
-        if not isinstance(event.message, TextMessage):
-            continue
+        # if not isinstance(event.message, TextMessage):
+        #     continue
 
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=event.message.text)
@@ -95,16 +178,21 @@ def webhook_handler():
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         if not isinstance(event, MessageEvent):
+            if isinstance(event, PostbackEvent):
+                print("action")
+                reply_token = event.reply_token
+                if handel_favorite(event):
+                    send_text_message(reply_token, "已收藏!")
+                else:
+                    send_text_message(reply_token, "取消收藏!")
+                
             continue
-        if not isinstance(event.message, TextMessage):
-            continue
-        if not isinstance(event.message.text, str):
-            continue
+
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+            send_text_message(event.reply_token, "請按指示操作")
 
     return "OK"
 
