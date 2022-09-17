@@ -86,18 +86,22 @@ Or You can use [servo](http://serveo.net/) to expose local servers to the intern
 
 
 ## 操作說明
-### 介紹
-![S__52772950](https://user-images.githubusercontent.com/61956056/147881463-9aa9224f-d5e5-467d-b787-6ed914d60dc7.jpg)
-### 選單:選擇類型or關鍵字
-![S__52772949](https://user-images.githubusercontent.com/61956056/147881473-38a72ea2-3f02-43e9-8ac6-d372bb031f66.jpg)
-### 傳送位置
-![S__52772948](https://user-images.githubusercontent.com/61956056/147881475-458860e6-5705-48a2-af07-3127134053fe.jpg)
+### 歡迎介紹
 
-### 輸出結果
-![S__52772945](https://user-images.githubusercontent.com/61956056/147881490-69064c15-e116-454b-94fb-88437ccd5e7c.jpg)
+<img src="https://user-images.githubusercontent.com/61956056/147881463-9aa9224f-d5e5-467d-b787-6ed914d60dc7.jpg" width="200">
+
+### 選單:選擇類型or關鍵字
+
+<img src="https://user-images.githubusercontent.com/61956056/147881473-38a72ea2-3f02-43e9-8ac6-d372bb031f66.jpg" width="200">
+
+### 傳送位置
+
+<img src="https://user-images.githubusercontent.com/61956056/147881475-458860e6-5705-48a2-af07-3127134053fe.jpg" width="200">  <img src="https://user-images.githubusercontent.com/61956056/147881496-6702fc2f-c541-446b-b0a0-dde42547b4a7.jpg" width="200">
 
 ### 點擊連結google map or 點擊收藏進行收藏
-![S__52772947](https://user-images.githubusercontent.com/61956056/147881496-6702fc2f-c541-446b-b0a0-dde42547b4a7.jpg)
+
+<img src="https://user-images.githubusercontent.com/61956056/147881490-69064c15-e116-454b-94fb-88437ccd5e7c.jpg" width="200">
+
 ### 查看收藏，並刪除收藏
 
 ## Deploy
